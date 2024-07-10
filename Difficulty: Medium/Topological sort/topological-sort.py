@@ -1,28 +1,36 @@
+from collections import deque
+
 class Solution:
+    # Function to return list containing vertices in Topological order.
+    def topoSort(self, V, adj):           #Using Kahn's Algo
+        
+        in_degree = [0] * V
     
-    #Function to return list containing vertices in Topological order.
-    def topoSort(self, V, adj):
-        # Code here
-        def dfs(i, at, visited, ordering):
-            visited[at] = True
-            edges = adj[at]
-            for edge in edges:
-                if not visited[edge]:
-                    i = dfs(i, edge, visited, ordering)
-            ordering[i] = at
-            return i - 1
+        for i in range(V):
+            for j in adj[i]:
+                in_degree[j] += 1
+        
+        q = deque()
+        for i in range(V):
+            if in_degree[i] == 0:
+                q.append(i)
+        
+        order = []
+        
+        while q:
+            at = q.popleft()
+            order.append(at)
+        
+            for to in adj[at]:
+                in_degree[to] -= 1
+            
+                if in_degree[to] == 0:
+                    q.append(to)
+        
+        if len(order) != V:
+            return []  
+        return order
 
-        # N is the number of nodes (V)
-        N = V
-        visited = [False] * N
-        ordering = [0] * N
-        i = N - 1
-
-        for at in range(N):
-            if not visited[at]:
-                i = dfs(i, at, visited, ordering)
-
-        return ordering
 
 
 
